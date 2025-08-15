@@ -4,4 +4,3 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 from . import rsl_rl_ppo_cfg
-from . import surface_vehicle_ppo_cfg

@@ -10,6 +10,7 @@ import random
 import math
 import torch
 from collections.abc import Sequence
+from typing import Tuple
 
 from .assets.warpauv import WARPAUV_CFG
 
@@ -71,13 +72,11 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
     action_space: gym.spaces.Space = gym.spaces.Box(low=-1.0, high=1.0, shape=(6,), dtype=np.float64)
     state_space: gym.spaces.Space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(17,), dtype=np.float64)
     # env
-    decimation = 2
+    decimation = 1  # Changed to match render interval
     cap_episode_length = True
     episode_length_s = 3.0
     episode_length_before_reset = None
-    num_actions = 6
-    num_observations = 17
-    num_states = 0
+    # Removed deprecated num_actions, num_observations, num_states
     use_boundaries = True
     max_auv_x = 7
     max_auv_y = 7
@@ -221,7 +220,6 @@ class WarpAUVEnv(DirectRLEnv):
         self.scene.articulations["robot"] = self._robot
 
         light_cfg = sim_utils.DomeLightCfg(intensity=2000.0, color=(0.75, 0.75, 0.75))
-
         light_cfg.func("/World/Light", light_cfg)
 
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
@@ -284,13 +282,13 @@ class WarpAUVEnv(DirectRLEnv):
         if self.cfg.cap_episode_length:
             time_out = self.episode_length_buf >= self.max_episode_length - 1
         else:
-            time_out = torch.zeros(self.num_envs)
+            time_out = torch.zeros(self.num_envs, device=self.device)  # Added device
 
         self._step_count = self._step_count + 1
 
         if self.cfg.episode_length_before_reset:
             if self._step_count == self.cfg.episode_length_before_reset:
-                time_out = torch.ones(self.num_envs)
+                time_out = torch.ones(self.num_envs, device=self.device)  # Added device
 
         if self.cfg.use_boundaries:
             out_of_bounds = (
@@ -299,7 +297,7 @@ class WarpAUVEnv(DirectRLEnv):
                 (torch.abs(self._robot.data.root_pos_w[:, 2] - self.cfg.starting_depth) > self.cfg.max_auv_z)
             )
         else:
-            out_of_bounds = torch.zeros(self.num_envs)
+            out_of_bounds = torch.zeros(self.num_envs, device=self.device)  # Added device
 
         return out_of_bounds, time_out
 
