@@ -47,7 +47,7 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
 
     sim: SimulationCfg = SimulationCfg(dt=1 / 120)
     robot_cfg: RigidObjectCfg = WARPAUV_CFG.replace(prim_path="/World/envs/env_.*/Robot")
-    scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=4, env_spacing=25.0, replicate_physics=True)
+    scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=4, env_spacing=20.0, replicate_physics=True)
     debug_vis = True
 
     observation_space: gym.spaces.Space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(20,), dtype=np.float64)
@@ -500,25 +500,26 @@ class WarpAUVEnv(DirectRLEnv):
 
     def _debug_vis_callback(self, event):
         # Visualize coordinate axes at each environment's origin
-        # X-axis (Red) - pointing in +X direction
+        # X-axis (Red) - pointing in +X direction (right)
         x_orientations = torch.tensor([[0, 0, 0, 1]], device=self.device).repeat(self.num_envs, 1)
         self.origin_x_axis.visualize(
             translations=self._default_env_origins,
             orientations=x_orientations
         )
         
-        # Y-axis (Green) - pointing in +Y direction (rotate 90° around Z)
+        # Y-axis (Green) - pointing in +Y direction (forward/north)
+        # For right-handed: rotate -90° around Z axis
         y_orientations = math_utils.quat_from_euler_xyz(
             torch.zeros(self.num_envs, device=self.device),
             torch.zeros(self.num_envs, device=self.device),
-            torch.full((self.num_envs,), torch.pi/2, device=self.device)
+            torch.full((self.num_envs,), -torch.pi/2, device=self.device)  # Changed to negative
         )
         self.origin_y_axis.visualize(
             translations=self._default_env_origins,
             orientations=y_orientations
         )
         
-        # Z-axis (Blue) - pointing in +Z direction (rotate -90° around Y)
+        # Z-axis (Blue) - pointing in +Z direction (up)
         z_orientations = math_utils.quat_from_euler_xyz(
             torch.zeros(self.num_envs, device=self.device),
             torch.full((self.num_envs,), -torch.pi/2, device=self.device),
@@ -553,9 +554,9 @@ class WarpAUVEnv(DirectRLEnv):
             scales=robot_scales
         )
 
-        # Robot Y-axis (GREEN) - rotate 90° around Z from X
+        # Robot Y-axis (GREEN) - rotate -90° around Z from X
         robot_y_orientations = self._rotate_quat_by_euler_xyz(
-            self._robot.data.root_quat_w, 0.0, 0.0, torch.pi/2
+            self._robot.data.root_quat_w, 0.0, 0.0, -torch.pi/2  # Changed to negative
         )
         self.robot_y_axis.visualize(
             translations=self._robot.data.root_pos_w, 
