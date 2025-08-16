@@ -4,7 +4,7 @@ import os
 
 USD_PATH = os.path.join(os.path.dirname(__file__), "../data/warpauv/warpauv.usd")
 
-# Original WarpAUV configuration (with missing visual assets)
+# WarpAUV configuration with proper visual asset handling
 WARPAUV_CFG = RigidObjectCfg(
     prim_path="{ENV_REGEX_NS}/Robot",
     spawn=sim_utils.UsdFileCfg(
@@ -18,19 +18,20 @@ WARPAUV_CFG = RigidObjectCfg(
         articulation_props=sim_utils.ArticulationRootPropertiesCfg(
             articulation_enabled=False,
         ),
-        # Set explicit mass properties
         mass_props=sim_utils.MassPropertiesCfg(
             mass=22.701,
         ),
         copy_from_source=False,
         activate_contact_sensors=False,
+        # Important: Set the scale to ensure proper loading
+        scale=(1.0, 1.0, 1.0),
     ),
     init_state=RigidObjectCfg.InitialStateCfg(
         pos=(0.0, 0.0, 5),
     )
 )
 
-# Simple geometric AUV configuration (visible blue box)
+# Alternative: Simple geometric AUV (backup)
 SIMPLE_WARPAUV_CFG = RigidObjectCfg(
     prim_path="{ENV_REGEX_NS}/Robot", 
     spawn=sim_utils.CuboidCfg(

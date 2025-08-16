@@ -12,7 +12,7 @@ import math
 import torch
 from collections.abc import Sequence
 
-from .assets.warpauv import SIMPLE_WARPAUV_CFG as WARPAUV_CFG
+from .assets.warpauv import WARPAUV_CFG, SIMPLE_WARPAUV_CFG
 
 import isaaclab.sim as sim_utils
 from isaaclab.assets import RigidObject, RigidObjectCfg
