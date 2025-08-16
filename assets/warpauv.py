@@ -19,7 +19,7 @@ WARPAUV_CFG = RigidObjectCfg(
             articulation_enabled=False,
         ),
         mass_props=sim_utils.MassPropertiesCfg(
-            mass=22.701,
+            mass=1.248,
         ),
         copy_from_source=False,
         activate_contact_sensors=False,
@@ -27,7 +27,7 @@ WARPAUV_CFG = RigidObjectCfg(
         scale=(1.0, 1.0, 1.0),
     ),
     init_state=RigidObjectCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 5),
+        pos=(0.0, 0.0, 0.5),
     )
 )
 

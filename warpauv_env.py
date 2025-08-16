@@ -70,6 +70,16 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
     scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=4, env_spacing=4.0, replicate_physics=True)
     debug_vis = True
 
+    """
+    Turn off 5 thrusters
+    """
+
+    # NEW: Thruster control configuration
+    # Thruster order: [drive_left, drive_right, rear_left, rear_right, front_left, front_right]
+    #                 [    0    ,     1     ,    2    ,     3     ,     4     ,      5     ]
+    active_thrusters = [False, True, False, False, False, False]  # Only rear_right active
+
+
     # Rest of your configuration remains the same...
     # env
     decimation = 2
@@ -128,9 +138,9 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
     water_beta = 0.001306 # Pa s, dynamic viscosity of water @ 50 deg F
     rotor_constant = 0.1 / 100.0 # rotor constant used in Gazebo, note /10 because 0.04 is "10x bigger than it should be"
     dyn_time_constant = 0.05 # time constant for linear dynamics for each rotor 
-    volume = 0.022747843530591776 # assuming cubic meters - NEUTRALLY BOUYANT. In orignal sim file volume = 0.0223
+    volume = 1.252e-3 # assuming cubic meters - NEUTRALLY BOUYANT. In orignal sim file volume = 0.0223
     # volume = 0.03
-    mass = 2.2701e+01 # kg
+    mass = 1.248 # kg
 
      # domain randomization
     # todo: isaaclabs has a built-in method somehow
@@ -151,7 +161,7 @@ class WarpAUVEnv(DirectRLEnv):
         super().__init__(cfg, render_mode, **kwargs)
 
         # Debug mode?
-        self._debug = False
+        self._debug = True
 
         # Initialize buffers
         self._actions = torch.zeros(self.num_envs, 6, device=self.device)
@@ -189,9 +199,9 @@ class WarpAUVEnv(DirectRLEnv):
 
         # estimated inertial values from a solid rect. prism model (with estimated side lengths of 0.7m, 0.4m, and 0.2m):
         # fake inertial values for warpauv, based on I_ii = (1/12) * mass * (len_j**2 + len_k**2)
-        self.inertia_tensors[:, 0] = 0.37
-        self.inertia_tensors[:, 1] = 0.97
-        self.inertia_tensors[:, 2] = 1.19
+        self.inertia_tensors[:, 0] = 7.60e-4
+        self.inertia_tensors[:, 1] = 1.04e-1
+        self.inertia_tensors[:, 2] = 1.04e-1
 
         if self.cfg.mass:
             self.masses = torch.full((self.num_envs, 1), self.cfg.mass, device=self.device)
@@ -216,6 +226,11 @@ class WarpAUVEnv(DirectRLEnv):
         
         # Set initial goals
         self._reset_idx(self._robot._ALL_INDICES)
+
+        print("=== THRUSTER CONFIGURATION ===")
+        for i, name in enumerate(['drive_left', 'drive_right', 'rear_left', 'rear_right', 'front_left', 'front_right']):
+            pos = self.thruster_com_offsets[0, i]  # First environment
+            print(f"{name:12s}: x={pos[0]:+7.3f}, y={pos[1]:+7.3f}, z={pos[2]:+7.3f}")
 
     def _init_thruster_dynamics(self):
         if type(self.cfg.com_to_cob_offset) != torch.Tensor:
@@ -417,7 +432,19 @@ class WarpAUVEnv(DirectRLEnv):
 
         thruster_forces = torch.zeros((self.num_envs, 6, 3), device=self.device, dtype=torch.float)
         thruster_torques = torch.zeros((self.num_envs, 6, 3), device=self.device, dtype=torch.float)
-        motorValues = torch.clone(actions) # at this point these are PWM commands between -1 and 1
+
+        # NEW: Apply thruster mask from configuration
+        thruster_mask = torch.tensor(self.cfg.active_thrusters, device=self.device, dtype=torch.float)
+        masked_actions = actions * thruster_mask.unsqueeze(0)  # Broadcast to all environments
+        
+        if self._debug: 
+            print("Original actions:", actions[0])  # First environment
+            print("Thruster mask:", thruster_mask)
+            print("Masked actions:", masked_actions[0])  # First environment
+        
+        motorValues = torch.clone(masked_actions)  # Use masked_actions instead of actions 
+
+        # motorValues = torch.clone(actions) # at this point these are PWM commands between -1 and 1
 
         if self._debug: print("motorValues: ", motorValues)
 
