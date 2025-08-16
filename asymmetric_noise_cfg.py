@@ -43,14 +43,19 @@ class AsymmetricNoiseModelWithAdditiveBiasCfg(NoiseModelCfg):
 
     class_type: type = AsymmetricNoiseModelWithAdditiveBias
 
-    bias_noise_cfg: NoiseCfg = MISSING
+    # Provide default values instead of MISSING
+    bias_noise_cfg: NoiseCfg = GaussianNoiseCfg(
+        mean=0.0,
+        std=1.0,
+        operation="add"
+    )
 
     dims: int = 1
 
 def asymmetric_gaussian_noise(data: torch.Tensor, cfg: NoiseCfg) -> torch.Tensor:
     """Gaussian noise."""
-    mean = cfg.mean.repeat(data.shape[0],1)
-    std = cfg.std.repeat(data.shape[0],1)
+    mean = cfg.mean.repeat(data.shape[0],1) if hasattr(cfg.mean, 'repeat') else torch.full_like(data, cfg.mean)
+    std = cfg.std.repeat(data.shape[0],1) if hasattr(cfg.std, 'repeat') else torch.full_like(data, cfg.std)
 
     if cfg.operation == "add":
         return data + mean + std * torch.randn_like(data)
@@ -67,7 +72,8 @@ class AsymmetricGaussianNoiseCfg(NoiseCfg):
 
     func = asymmetric_gaussian_noise
 
-    mean: torch.Tensor | float = MISSING
+    # Provide default values instead of MISSING
+    mean: torch.Tensor | float = 0.0
     """The mean of the noise. Defaults to 0.0."""
-    std: torch.Tensor | float = MISSING
+    std: torch.Tensor | float = 1.0
     """The standard deviation of the noise. Defaults to 1.0."""

@@ -1,17 +1,18 @@
 """
-WarpAUV environment for IsaacLabs
+WarpAUV environment for IsaacLabs - Fixed Configuration
 
 Author: Kevin Chang and Levi "Veevee" Cai (cail@mit.edu)
 """
 
 from __future__ import annotations
 
+import gymnasium as gym
 import random
 import math
 import torch
 from collections.abc import Sequence
 
-from .assets.warpauv import WARPAUV_CFG
+from .assets.warpauv import SIMPLE_WARPAUV_CFG as WARPAUV_CFG
 
 import isaaclab.sim as sim_utils
 from isaaclab.assets import RigidObject, RigidObjectCfg
@@ -25,6 +26,7 @@ from isaaclab.utils.math import sample_uniform, normalize
 from isaaclab.markers import CUBOID_MARKER_CFG, VisualizationMarkers, RED_ARROW_X_MARKER_CFG, GREEN_ARROW_X_MARKER_CFG, BLUE_ARROW_X_MARKER_CFG
 from isaaclab.utils.math import quat_apply, quat_conjugate, quat_from_angle_axis, quat_mul
 import isaaclab.utils.math as math_utils
+
 
 ##
 # Hydrodynamic model
@@ -58,21 +60,42 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
 
     sim: SimulationCfg = SimulationCfg(dt=1 / 120)
 
-    # robot
+    # # Use the simple robot configuration for better visibility
+    # robot_cfg: RigidObjectCfg = SIMPLE_WARPAUV_CFG.replace(prim_path="/World/envs/env_.*/Robot")
+    
+    # OR use original USD version:
     robot_cfg: RigidObjectCfg = WARPAUV_CFG.replace(prim_path="/World/envs/env_.*/Robot")
 
     # scene
     scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=4, env_spacing=4.0, replicate_physics=True)
     debug_vis = True
 
+    # Rest of your configuration remains the same...
     # env
     decimation = 2
     cap_episode_length = True
     episode_length_s = 3.0
     episode_length_before_reset = None
+    
+    # Define action and observation spaces properly
     num_actions = 6
     num_observations = 17
     num_states = 0
+    
+    # Action space: Box space for 6 thruster commands
+    action_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(6,), dtype=float)
+    
+    # Observation space: Box space for observations
+    observation_space = gym.spaces.Box(
+        low=-float('inf'), 
+        high=float('inf'), 
+        shape=(17,), 
+        dtype=float
+    )
+    
+    # State space (empty for this environment)
+    state_space = gym.spaces.Box(low=0, high=0, shape=(0,), dtype=float)
+    
     use_boundaries = True
     max_auv_x = 7
     max_auv_y = 7
@@ -120,7 +143,7 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
         volume_range = [0.019747843530591773, 0.02574784353059178] # uniform [loierbound, upperbound]
         mass_range = [2.2701e+01,2.2701e+01] # uniform [lowerbound, upperbound]
 
-
+# Rest of the WarpAUVEnv class remains the same...
 class WarpAUVEnv(DirectRLEnv):
     cfg: WarpAUVEnvCfg
 
