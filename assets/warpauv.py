@@ -14,10 +14,6 @@ WARPAUV_CFG = RigidObjectCfg(
             max_depenetration_velocity=10.0,
             enable_gyroscopic_forces=True,
         ),
-        articulation_props=sim_utils.ArticulationRootPropertiesCfg(
-            articulation_enabled=False,
-        ),
-
         copy_from_source=False,
     ),
     init_state=RigidObjectCfg.InitialStateCfg(
