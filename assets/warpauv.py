@@ -1,6 +1,8 @@
 import isaaclab.sim as sim_utils
 from isaaclab.assets import RigidObjectCfg
 import os
+from typing import Tuple
+
 
 USD_PATH = os.path.join(os.path.dirname(__file__), "../data/warpauv/warpauv.usd")
 

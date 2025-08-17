@@ -2,6 +2,8 @@
 # All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
+from typing import Tuple
+
 
 from isaaclab.utils import configclass
 from isaaclab_rl.rsl_rl import (

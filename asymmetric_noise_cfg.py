@@ -1,4 +1,6 @@
 import torch
+from typing import Tuple
+
 
 from dataclasses import MISSING
 from collections.abc import Sequence

@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 import numpy as np 
 import torch
+from typing import Tuple
+
 
 def get_thruster_com_and_orientations(device):
   """
@@ -36,9 +38,9 @@ def get_thruster_com_and_orientations(device):
   # +Z = Down
   thruster_info = dict(
     drive_left=create_tf_quat(-0.4127, 0.1506, -0.0889, 1,0,0,0),
-    drive_right = create_tf_quat(-0.42,0,0,1,0,0,0), # Thruster
+    drive_right = create_tf_quat(-0.42,0,0,1,0,0,0), # Main thruster, which provides the forward motion
     rear_left = create_tf_rpy(-0.303, 0.1461, -0.1587, 0, -0.785398, 1.5708),
-    rear_right = create_tf_rpy(-0.42, 0, 0, 0, 0, 1.5708), # This surrogates the rudder fixed at the tail, which gives the yaw motion
+    rear_right = create_tf_rpy(-0.50, 0, 0, 0, 0, 1.5708), # This surrogates the rudder fixed at the tail, which gives the yaw motion
     front_right = create_tf_rpy(0.0585, -0.1461, -0.0540, 0, 0.785398,-1.5708),
     front_left = create_tf_rpy(0.0585, 0.1461, -0.0540, 0, 0.785398, 1.5708),
   )

@@ -11,6 +11,8 @@ from typing import Tuple
 from isaaclab.utils.math import quat_conjugate, quat_inv, quat_apply, convert_quat
 import numpy as np 
 import torch 
+from typing import Tuple
+
 
 @dataclass
 class HydrodynamicForceModels:
