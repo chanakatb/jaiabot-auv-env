@@ -29,11 +29,16 @@ def get_thruster_com_and_orientations(device):
     return shift, r
 
   # TODO: think about the format of this, get rid of helper functions
+  # The coordinate frame of the body fixed axis: 
+  # LEFT-HANDED coordinate system.
+  # +X = Forward (nose)
+  # +Y = Port (left side)  
+  # +Z = Down
   thruster_info = dict(
     drive_left=create_tf_quat(-0.4127, 0.1506, -0.0889, 1,0,0,0),
-    drive_right = create_tf_quat(-0.42,0,0,1,0,0,0), # drive_right = create_tf_quat(-0.4127,-.1506,-0.0889,1,0,0,0),
+    drive_right = create_tf_quat(-0.42,0,0,1,0,0,0), # Thruster
     rear_left = create_tf_rpy(-0.303, 0.1461, -0.1587, 0, -0.785398, 1.5708),
-    rear_right = create_tf_rpy(-0.303, -0.1461, -0.1587, 0, -0.785398, -1.5708), 
+    rear_right = create_tf_rpy(-0.42, 0, 0, 0, 0, 1.5708), # This surrogates the rudder fixed at the tail, which gives the yaw motion
     front_right = create_tf_rpy(0.0585, -0.1461, -0.0540, 0, 0.785398,-1.5708),
     front_left = create_tf_rpy(0.0585, 0.1461, -0.0540, 0, 0.785398, 1.5708),
   )

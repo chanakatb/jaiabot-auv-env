@@ -77,7 +77,7 @@ class WarpAUVEnvCfg(DirectRLEnvCfg):
     # NEW: Thruster control configuration
     # Thruster order: [drive_left, drive_right, rear_left, rear_right, front_left, front_right]
     #                 [    0    ,     1     ,    2    ,     3     ,     4     ,      5     ]
-    active_thrusters = [False, True, False, False, False, False]  # Only rear_right active
+    active_thrusters = [False, True, False, True, False, False]  # Only drive_right active
 
 
     # Rest of your configuration remains the same...
