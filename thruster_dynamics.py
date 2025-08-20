@@ -39,8 +39,8 @@ def get_thruster_com_and_orientations(device):
   thruster_info = dict(
     drive_left=create_tf_quat(-0.4127, 0.1506, -0.0889, 1,0,0,0),
     drive_right = create_tf_quat(-0.42,0,0,1,0,0,0), # Main thruster, which provides the forward motion
-    rear_left = create_tf_rpy(-0.303, 0.1461, -0.1587, 0, -0.785398, 1.5708),
-    rear_right = create_tf_rpy(-0.50, 0, 0, 0, 0, 1.5708), # This surrogates the rudder fixed at the tail, which gives the yaw motion
+    rear_left = create_tf_rpy(-0.70, 0, 0, 0, 0, 1.5708), # This surrogates the rudder fixed at the tail, which gives the yaw motion (turn left)
+    rear_right = create_tf_rpy(-0.70, 0, 0, 0, 0, -1.5708), # This surrogates the rudder fixed at the tail, which gives the yaw motion (turn right)
     front_right = create_tf_rpy(0.0585, -0.1461, -0.0540, 0, 0.785398,-1.5708),
     front_left = create_tf_rpy(0.0585, 0.1461, -0.0540, 0, 0.785398, 1.5708),
   )
