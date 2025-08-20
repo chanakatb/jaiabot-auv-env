@@ -1,0 +1,271 @@
+env:
+  viewer:
+    eye:
+    - 7.5
+    - 7.5
+    - 7.5
+    lookat:
+    - 0.0
+    - 0.0
+    - 0.0
+    cam_prim_path: /OmniverseKit_Persp
+    resolution:
+    - 1280
+    - 720
+    origin_type: world
+    env_index: 0
+    asset_name: null
+    body_name: null
+  sim:
+    physics_prim_path: /physicsScene
+    device: cuda:0
+    dt: 0.008333333333333333
+    render_interval: 1
+    gravity:
+    - 0.0
+    - 0.0
+    - -9.81
+    enable_scene_query_support: false
+    use_fabric: true
+    physx:
+      solver_type: 1
+      min_position_iteration_count: 1
+      max_position_iteration_count: 255
+      min_velocity_iteration_count: 0
+      max_velocity_iteration_count: 255
+      enable_ccd: false
+      enable_stabilization: false
+      enable_enhanced_determinism: false
+      bounce_threshold_velocity: 0.5
+      friction_offset_threshold: 0.04
+      friction_correlation_distance: 0.025
+      gpu_max_rigid_contact_count: 8388608
+      gpu_max_rigid_patch_count: 163840
+      gpu_found_lost_pairs_capacity: 2097152
+      gpu_found_lost_aggregate_pairs_capacity: 33554432
+      gpu_total_aggregate_pairs_capacity: 2097152
+      gpu_collision_stack_size: 67108864
+      gpu_heap_capacity: 67108864
+      gpu_temp_buffer_capacity: 16777216
+      gpu_max_num_partitions: 8
+      gpu_max_soft_body_contacts: 1048576
+      gpu_max_particle_contacts: 1048576
+    physics_material:
+      func: isaaclab.sim.spawners.materials.physics_materials:spawn_rigid_body_material
+      static_friction: 0.5
+      dynamic_friction: 0.5
+      restitution: 0.0
+      improve_patch_friction: true
+      friction_combine_mode: average
+      restitution_combine_mode: average
+      compliant_contact_stiffness: 0.0
+      compliant_contact_damping: 0.0
+    render:
+      enable_translucency: null
+      enable_reflections: null
+      enable_global_illumination: null
+      antialiasing_mode: null
+      enable_dlssg: null
+      enable_dl_denoiser: null
+      dlss_mode: null
+      enable_direct_lighting: null
+      samples_per_pixel: null
+      enable_shadows: null
+      enable_ambient_occlusion: null
+      carb_settings: null
+      rendering_mode: null
+  ui_window_class_type: isaaclab_tasks.direct.isaac_auv_env.warpauv_env:WarpAUVEnvWindow
+  seed: null
+  decimation: 4
+  is_finite_horizon: false
+  episode_length_s: 100.0
+  scene:
+    num_envs: 4
+    env_spacing: 20.0
+    lazy_sensor_update: true
+    replicate_physics: true
+    filter_collisions: true
+  events: null
+  observation_space: '{"type": "gymnasium", "space": "Box", "low": [-Infinity, -Infinity,
+    -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity,
+    -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity,
+    -Infinity, -Infinity], "high": [Infinity, Infinity, Infinity, Infinity, Infinity,
+    Infinity, Infinity, Infinity, Infinity, Infinity, Infinity, Infinity, Infinity,
+    Infinity, Infinity, Infinity, Infinity, Infinity, Infinity, Infinity], "shape":
+    [20]}'
+  num_observations: 20
+  state_space: '{"type": "gymnasium", "space": "Box", "low": [], "high": [], "shape":
+    [0]}'
+  num_states: 0
+  observation_noise_model: null
+  action_space: '{"type": "gymnasium", "space": "Box", "low": [0.0, -1.0], "high":
+    [1.0, 1.0], "shape": [2]}'
+  num_actions: 2
+  action_noise_model: null
+  rerender_on_reset: false
+  wait_for_textures: true
+  xr: null
+  robot_cfg:
+    class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+    prim_path: /World/envs/env_.*/Robot
+    spawn:
+      func: isaaclab.sim.spawners.from_files.from_files:spawn_from_usd
+      visible: true
+      semantic_tags: null
+      copy_from_source: false
+      mass_props:
+        mass: 1.248
+        density: null
+      deformable_props: null
+      rigid_props:
+        rigid_body_enabled: null
+        kinematic_enabled: null
+        disable_gravity: false
+        linear_damping: null
+        angular_damping: null
+        max_linear_velocity: null
+        max_angular_velocity: null
+        max_depenetration_velocity: 10.0
+        max_contact_impulse: null
+        enable_gyroscopic_forces: true
+        retain_accelerations: null
+        solver_position_iteration_count: null
+        solver_velocity_iteration_count: null
+        sleep_threshold: null
+        stabilization_threshold: null
+      collision_props: null
+      activate_contact_sensors: false
+      scale:
+      - 1.0
+      - 1.0
+      - 1.0
+      articulation_props:
+        articulation_enabled: false
+        enabled_self_collisions: null
+        solver_position_iteration_count: null
+        solver_velocity_iteration_count: null
+        sleep_threshold: null
+        stabilization_threshold: null
+        fix_root_link: null
+      fixed_tendons_props: null
+      joint_drive_props: null
+      visual_material_path: material
+      visual_material: null
+      usd_path: /home/lucky-champ/IsaacLab/source/isaaclab_tasks/isaaclab_tasks/direct/isaac_auv_env/assets/../data/warpauv/warpauv.usd
+      variants: null
+    init_state:
+      pos:
+      - 0.0
+      - 0.0
+      - 0.5
+      rot:
+      - 1.0
+      - 0.0
+      - 0.0
+      - 0.0
+      lin_vel:
+      - 0.0
+      - 0.0
+      - 0.0
+      ang_vel:
+      - 0.0
+      - 0.0
+      - 0.0
+    collision_group: 0
+    debug_vis: false
+  target_radius: 7.0
+  target_speed: 1.0
+  rew_scale_circular_pos: 2.0
+  rew_scale_speed: 10.0
+  rew_scale_constraint_violation: 1.0
+  rew_scale_completion: 100.0
+  rew_scale_pos: 0.0
+  rew_scale_ang: 5.0
+  rew_scale_vel: 8.0
+  rew_scale_ang_vel: 3.0
+  rew_scale_lin_vel: 0.0
+  rew_scale_actions: 0.05
+  rew_scale_terminated: 0.0
+  rew_scale_alive: 0.1
+  rew_scale_yaw_integral: 0.0
+  yaw_int_tau_s: 3.0
+  yaw_int_gain: 1.0
+  yaw_int_gate_speed_frac: 0.4
+  yaw_int_window_rad: 0.7853981633974483
+  align_yaw_on_reset: true
+  debug_vis: true
+  active_thrusters:
+  - false
+  - true
+  - false
+  - true
+  - false
+  - false
+  cap_episode_length: true
+  episode_length_before_reset: null
+  use_boundaries: true
+  max_auv_x: 15
+  max_auv_y: 15
+  max_auv_z: 2
+  starting_depth: 0
+  min_goal_steps: 100
+  goal_completion_radius: 0.5
+  goal_dims: 4
+  eval_mode: false
+  goal_spawn_radius: 7.0
+  init_guidance_rate: 0.8
+  init_vel_max: 1.0
+  com_to_cob_offset:
+  - 0.0
+  - 0.0
+  - 0.01
+  water_rho: 997.0
+  water_beta: 0.001306
+  rotor_constant: 0.001
+  dyn_time_constant: 0.05
+  volume: 0.001252
+  mass: 1.248
+agent:
+  seed: 42
+  device: cuda:0
+  num_steps_per_env: 24
+  max_iterations: 400
+  empirical_normalization: false
+  policy:
+    class_name: ActorCritic
+    init_noise_std: 1.0
+    noise_std_type: scalar
+    actor_hidden_dims:
+    - 64
+    - 64
+    critic_hidden_dims:
+    - 64
+    - 64
+    activation: elu
+  algorithm:
+    class_name: PPO
+    num_learning_epochs: 5
+    num_mini_batches: 4
+    learning_rate: 0.0005
+    schedule: adaptive
+    gamma: 0.99
+    lam: 0.95
+    entropy_coef: 0.0
+    desired_kl: 0.01
+    max_grad_norm: 1.0
+    value_loss_coef: 1.0
+    use_clipped_value_loss: true
+    clip_param: 0.2
+    normalize_advantage_per_mini_batch: false
+    symmetry_cfg: null
+    rnd_cfg: null
+  clip_actions: null
+  save_interval: 50
+  experiment_name: warpauv_direct
+  run_name: ''
+  logger: tensorboard
+  neptune_project: isaaclab
+  wandb_project: isaaclab
+  resume: false
+  load_run: .*
+  load_checkpoint: model_.*.pt

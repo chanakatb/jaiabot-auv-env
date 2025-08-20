@@ -103,24 +103,19 @@ class DynamicsFirstOrder(Dynamics):
   # cmd: torch.tensor of shape (numEnvs, num_thrusters_per_env) 
   # t: torch.tensor of shape (numEnvs) with the current times 
   # given force commands, update the state of system and report current thrusts 
-  def update(self, cmd:torch.tensor, t:torch.tensor) -> float:
-    # old method would return state if single time was not set yet
-    #if self.prevTime < 0:
-    #  self.prevTime = t
-    #  return self.state
-
+  def update(self, cmd: torch.tensor, t: torch.tensor) -> float:
     # set previously unupdated times to the current time in those envs
     self.prevTime[self.prevTime < 0] = t[self.prevTime < 0]
 
     # because dt = 0 for previously unupdated times, alpha=1 and we just get the previous state 
     dt = t - self.prevTime
     alpha = torch.exp(-dt/self.tau)
-    alpha = torch.zeros_like(alpha) # todo: this wipes out alpha, always just sets it to the command!
-    #print(self.state.shape, cmd.shape, alpha.shape)
-    #print(dt, alpha, self.state)
+    # REMOVE THIS LINE that zeros out alpha:
+    # alpha = torch.zeros_like(alpha) # todo: this wipes out alpha, always just sets it to the command!
 
     self.state = self.state * alpha.unsqueeze(-1) + (1.0 - alpha).unsqueeze(-1) * cmd
-    assert torch.any(self.state == cmd)
+    # REMOVE THIS ASSERTION:
+    # assert torch.any(self.state == cmd)
 
     self.prevTime = t
     return self.state
